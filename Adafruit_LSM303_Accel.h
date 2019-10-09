@@ -12,8 +12,8 @@
   Written by Bryan Siepert for Adafruit Industries.
   BSD license, all text above must be included in any redistribution
  ***************************************************************************/
-#ifndef __LSM303_ACCEL_H__
-#define __LSM303_ACCEL_H__
+#ifndef LSM303_ACCEL_H
+#define LSM303_ACCEL_H
 
 #if (ARDUINO >= 100)
  #include "Arduino.h"
