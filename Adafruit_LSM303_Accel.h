@@ -27,61 +27,73 @@
 #include <Adafruit_I2CDevice.h>
 
 /*=========================================================================
-    I2C ADDRESS/BITS
-    -----------------------------------------------------------------------*/
-    #define LSM303_ADDRESS_ACCEL          (0x32 >> 1)         // 0011001x
+I2C ADDRESS/BITS
+-----------------------------------------------------------------------*/
+#define LSM303_ADDRESS_ACCEL          (0x32 >> 1)         // 0011001x
 /*=========================================================================*/
 
 /*=========================================================================
-    REGISTERS
-    -----------------------------------------------------------------------*/
-    typedef enum
-    {                                                     // DEFAULT    TYPE
-      LSM303_REGISTER_ACCEL_CTRL_REG1_A         = 0x20,   // 00000111   rw
-      LSM303_REGISTER_ACCEL_CTRL_REG2_A         = 0x21,   // 00000000   rw
-      LSM303_REGISTER_ACCEL_CTRL_REG3_A         = 0x22,   // 00000000   rw
-      LSM303_REGISTER_ACCEL_CTRL_REG4_A         = 0x23,   // 00000000   rw
-      LSM303_REGISTER_ACCEL_CTRL_REG5_A         = 0x24,   // 00000000   rw
-      LSM303_REGISTER_ACCEL_CTRL_REG6_A         = 0x25,   // 00000000   rw
-      LSM303_REGISTER_ACCEL_REFERENCE_A         = 0x26,   // 00000000   r
-      LSM303_REGISTER_ACCEL_STATUS_REG_A        = 0x27,   // 00000000   r
-      LSM303_REGISTER_ACCEL_OUT_X_L_A           = 0x28,
-      LSM303_REGISTER_ACCEL_OUT_X_H_A           = 0x29,
-      LSM303_REGISTER_ACCEL_OUT_Y_L_A           = 0x2A,
-      LSM303_REGISTER_ACCEL_OUT_Y_H_A           = 0x2B,
-      LSM303_REGISTER_ACCEL_OUT_Z_L_A           = 0x2C,
-      LSM303_REGISTER_ACCEL_OUT_Z_H_A           = 0x2D,
-      LSM303_REGISTER_ACCEL_FIFO_CTRL_REG_A     = 0x2E,
-      LSM303_REGISTER_ACCEL_FIFO_SRC_REG_A      = 0x2F,
-      LSM303_REGISTER_ACCEL_INT1_CFG_A          = 0x30,
-      LSM303_REGISTER_ACCEL_INT1_SOURCE_A       = 0x31,
-      LSM303_REGISTER_ACCEL_INT1_THS_A          = 0x32,
-      LSM303_REGISTER_ACCEL_INT1_DURATION_A     = 0x33,
-      LSM303_REGISTER_ACCEL_INT2_CFG_A          = 0x34,
-      LSM303_REGISTER_ACCEL_INT2_SOURCE_A       = 0x35,
-      LSM303_REGISTER_ACCEL_INT2_THS_A          = 0x36,
-      LSM303_REGISTER_ACCEL_INT2_DURATION_A     = 0x37,
-      LSM303_REGISTER_ACCEL_CLICK_CFG_A         = 0x38,
-      LSM303_REGISTER_ACCEL_CLICK_SRC_A         = 0x39,
-      LSM303_REGISTER_ACCEL_CLICK_THS_A         = 0x3A,
-      LSM303_REGISTER_ACCEL_TIME_LIMIT_A        = 0x3B,
-      LSM303_REGISTER_ACCEL_TIME_LATENCY_A      = 0x3C,
-      LSM303_REGISTER_ACCEL_TIME_WINDOW_A       = 0x3D
-    } lsm303AccelRegisters_t;
+REGISTERS
+-----------------------------------------------------------------------*/
+typedef enum
+{                                                     // DEFAULT    TYPE
+  LSM303_REGISTER_ACCEL_CTRL_REG1_A         = 0x20,   // 00000111   rw
+  LSM303_REGISTER_ACCEL_CTRL_REG2_A         = 0x21,   // 00000000   rw
+  LSM303_REGISTER_ACCEL_CTRL_REG3_A         = 0x22,   // 00000000   rw
+  LSM303_REGISTER_ACCEL_CTRL_REG4_A         = 0x23,   // 00000000   rw
+  LSM303_REGISTER_ACCEL_CTRL_REG5_A         = 0x24,   // 00000000   rw
+  LSM303_REGISTER_ACCEL_CTRL_REG6_A         = 0x25,   // 00000000   rw
+  LSM303_REGISTER_ACCEL_REFERENCE_A         = 0x26,   // 00000000   r
+  LSM303_REGISTER_ACCEL_STATUS_REG_A        = 0x27,   // 00000000   r
+  LSM303_REGISTER_ACCEL_OUT_X_L_A           = 0x28,
+  LSM303_REGISTER_ACCEL_OUT_X_H_A           = 0x29,
+  LSM303_REGISTER_ACCEL_OUT_Y_L_A           = 0x2A,
+  LSM303_REGISTER_ACCEL_OUT_Y_H_A           = 0x2B,
+  LSM303_REGISTER_ACCEL_OUT_Z_L_A           = 0x2C,
+  LSM303_REGISTER_ACCEL_OUT_Z_H_A           = 0x2D,
+  LSM303_REGISTER_ACCEL_FIFO_CTRL_REG_A     = 0x2E,
+  LSM303_REGISTER_ACCEL_FIFO_SRC_REG_A      = 0x2F,
+  LSM303_REGISTER_ACCEL_INT1_CFG_A          = 0x30,
+  LSM303_REGISTER_ACCEL_INT1_SOURCE_A       = 0x31,
+  LSM303_REGISTER_ACCEL_INT1_THS_A          = 0x32,
+  LSM303_REGISTER_ACCEL_INT1_DURATION_A     = 0x33,
+  LSM303_REGISTER_ACCEL_INT2_CFG_A          = 0x34,
+  LSM303_REGISTER_ACCEL_INT2_SOURCE_A       = 0x35,
+  LSM303_REGISTER_ACCEL_INT2_THS_A          = 0x36,
+  LSM303_REGISTER_ACCEL_INT2_DURATION_A     = 0x37,
+  LSM303_REGISTER_ACCEL_CLICK_CFG_A         = 0x38,
+  LSM303_REGISTER_ACCEL_CLICK_SRC_A         = 0x39,
+  LSM303_REGISTER_ACCEL_CLICK_THS_A         = 0x3A,
+  LSM303_REGISTER_ACCEL_TIME_LIMIT_A        = 0x3B,
+  LSM303_REGISTER_ACCEL_TIME_LATENCY_A      = 0x3C,
+  LSM303_REGISTER_ACCEL_TIME_WINDOW_A       = 0x3D
+} lsm303AccelRegisters_t;
 
 /*=========================================================================*/
 
 /*=========================================================================
-    INTERNAL ACCELERATION DATA TYPE
-    -----------------------------------------------------------------------*/
-    typedef struct lsm303AccelData_s
-    {
-      int16_t x;
-      int16_t y;
-      int16_t z;
-    } lsm303AccelData;
+INTERNAL ACCELERATION DATA TYPE
+-----------------------------------------------------------------------*/
+typedef struct lsm303AccelData_s
+{
+  int16_t x;
+  int16_t y;
+  int16_t z;
+} lsm303AccelData;
 /*=========================================================================*/
 
+typedef enum range {
+  LSM303_RANGE_2G,
+  LSM303_RANGE_4G,
+  LSM303_RANGE_8G,
+  LSM303_RANGE_16G,
+} lsm303_accel_range_t;
+
+typedef enum mode {
+  LSM303_MODE_NORMAL,
+  LSM303_MODE_HI_RESOLUTION,
+  LSM303_MODE_LOW_POWER,
+} lsm303_accel_mode_t;
 /*=========================================================================
     CHIP ID
     -----------------------------------------------------------------------*/
@@ -98,13 +110,21 @@ class Adafruit_LSM303_Accel_Unified : public Adafruit_Sensor
     bool getEvent(sensors_event_t*);
     void getSensor(sensor_t*);
 
+    void setRange(lsm303_accel_range_t);
+    lsm303_accel_range_t getRange(void);
+
+    lsm303_accel_mode_t getMode(void);
+    void setMode(lsm303_accel_mode_t);
+
+    float getLSB(void);
+
+
     lsm303AccelData raw;   // Last read accelerometer data will be available here
 
   private:
-    int32_t         _sensorID;
+    int32_t _sensorID;
 
-    void write8(byte address, byte reg, byte value);
-    byte read8(byte address, byte reg);
+
     void read(void);
 
     Adafruit_I2CDevice *i2c_dev;

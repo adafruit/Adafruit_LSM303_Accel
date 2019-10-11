@@ -27,60 +27,13 @@
 /* enabling this #define will enable the debug print blocks
 #define LSM303_DEBUG
 */
-
-static float _lsm303Accel_MG_LSB     = 0.001F;   // 1, 2, 4 or 12 mg per lsb
+// keepting for reference later; seems to disagree with the stm32 driver
+//static float _lsm303Accel_MG_LSB     = 0.001F;   // 1, 2, 4 or 12 mg per lsb
 
 /***************************************************************************
  ACCELEROMETER
  ***************************************************************************/
-// /***************************************************************************
-//  PRIVATE FUNCTIONS
-//  ***************************************************************************/
 
-// /**************************************************************************/
-// /*!
-//     @brief  Abstract away platform differences in Arduino wire library
-// */
-// /**************************************************************************/
-// void Adafruit_LSM303_Accel_Unified::write8(byte address, byte reg, byte value)
-// {
-//   Wire.beginTransmission(address);
-//   #if ARDUINO >= 100
-//     Wire.write((uint8_t)reg);
-//     Wire.write((uint8_t)value);
-//   #else
-//     Wire.send(reg);
-//     Wire.send(value);
-//   #endif
-//   Wire.endTransmission();
-// }
-
-// /**************************************************************************/
-// /*!
-//     @brief  Abstract away platform differences in Arduino wire library
-// */
-// /**************************************************************************/
-// byte Adafruit_LSM303_Accel_Unified::read8(byte address, byte reg)
-// {
-//   byte value;
-
-//   Wire.beginTransmission(address);
-//   #if ARDUINO >= 100
-//     Wire.write((uint8_t)reg);
-//   #else
-//     Wire.send(reg);
-//   #endif
-//   Wire.endTransmission();
-//   Wire.requestFrom(address, (byte)1);
-//   #if ARDUINO >= 100
-//     value = Wire.read();
-//   #else
-//     value = Wire.receive();
-//   #endif
-//   Wire.endTransmission();
-
-//   return value;
-// }
 
 
 /***************************************************************************
@@ -147,13 +100,14 @@ bool Adafruit_LSM303_Accel_Unified::getEvent(sensors_event_t *event) {
   /* Read new data */
   read();
 
+  float lsb = getLSB();
   event->version   = sizeof(sensors_event_t);
   event->sensor_id = _sensorID;
   event->type      = SENSOR_TYPE_ACCELEROMETER;
   event->timestamp = millis();
-  event->acceleration.x = (float)raw.x * _lsm303Accel_MG_LSB * SENSORS_GRAVITY_STANDARD;
-  event->acceleration.y = (float)raw.y * _lsm303Accel_MG_LSB * SENSORS_GRAVITY_STANDARD;
-  event->acceleration.z = (float)raw.z * _lsm303Accel_MG_LSB * SENSORS_GRAVITY_STANDARD;
+  event->acceleration.x = (float)raw.x * lsb * SENSORS_GRAVITY_STANDARD;
+  event->acceleration.y = (float)raw.y * lsb * SENSORS_GRAVITY_STANDARD;
+  event->acceleration.z = (float)raw.z * lsb * SENSORS_GRAVITY_STANDARD;
 
   return true;
 }
@@ -179,6 +133,88 @@ void Adafruit_LSM303_Accel_Unified::getSensor(sensor_t *sensor) {
   sensor->resolution  = 0.0F; // TBD
 }
 
+
+/**************************************************************************/
+/*!
+    @brief Sets the accelerometer's range
+    @param new_range an `lsm303_accel_range_t` representing the range of
+    measurements in +/-G. The smaller the range, the more accurate.
+*/
+/**************************************************************************/
+void Adafruit_LSM303_Accel_Unified::setRange(lsm303_accel_range_t new_range){
+  Adafruit_BusIO_Register ctrl_4 =
+    Adafruit_BusIO_Register(i2c_dev, LSM303_REGISTER_ACCEL_CTRL_REG4_A, 1);
+  Adafruit_BusIO_RegisterBits range =
+    Adafruit_BusIO_RegisterBits(&ctrl_4, 2, 4);
+  range.write(new_range);
+}
+
+/**************************************************************************/
+/*!
+    @brief Gets the accelerometer's range
+    @returns The `lsm303_accel_range_t` representing the range of
+    measurements in +/-G.
+*/
+/**************************************************************************/
+lsm303_accel_range_t Adafruit_LSM303_Accel_Unified::getRange(void){
+  Adafruit_BusIO_Register ctrl_4 =
+    Adafruit_BusIO_Register(i2c_dev, LSM303_REGISTER_ACCEL_CTRL_REG4_A, 1);
+  Adafruit_BusIO_RegisterBits range =
+    Adafruit_BusIO_RegisterBits(&ctrl_4, 2, 4);
+  return (lsm303_accel_range_t)range.read();
+}
+
+/**************************************************************************/
+/*!
+    @brief Sets the accelerometer's power mode
+    @param new_mode an `lsm303_accel_mode_t` representing the power mode.
+    The mode effects the precision of the sensor's readings
+    High resolution is 12-bit
+    Normal mode is 10-bit
+    Low power is 8-bit
+*/
+/**************************************************************************/
+
+void Adafruit_LSM303_Accel_Unified::setMode(lsm303_accel_mode_t new_mode){
+
+  Adafruit_BusIO_Register ctrl_1 =
+    Adafruit_BusIO_Register(i2c_dev, LSM303_REGISTER_ACCEL_CTRL_REG1_A, 1);
+  Adafruit_BusIO_Register ctrl_4 =
+    Adafruit_BusIO_Register(i2c_dev, LSM303_REGISTER_ACCEL_CTRL_REG4_A, 1);
+
+  Adafruit_BusIO_RegisterBits low_power = Adafruit_BusIO_RegisterBits(&ctrl_1, 1, 3);
+  Adafruit_BusIO_RegisterBits hi_res = Adafruit_BusIO_RegisterBits(&ctrl_4, 1, 3);
+
+  hi_res.write(new_mode & 0b01);
+  low_power.write((new_mode & 0b10) >>1);
+
+}
+/**************************************************************************/
+/*!
+    @brief Get the accelerometer's power mode
+    @returns The `lsm303_accel_mode_t` representing the power mode.
+*/
+/**************************************************************************/
+lsm303_accel_mode_t Adafruit_LSM303_Accel_Unified::getMode(void){
+
+  Adafruit_BusIO_Register ctrl_1 =
+    Adafruit_BusIO_Register(i2c_dev, LSM303_REGISTER_ACCEL_CTRL_REG1_A, 1);
+  Adafruit_BusIO_Register ctrl_4 =
+    Adafruit_BusIO_Register(i2c_dev, LSM303_REGISTER_ACCEL_CTRL_REG4_A, 1);
+
+  Adafruit_BusIO_RegisterBits low_power = Adafruit_BusIO_RegisterBits(&ctrl_1, 1, 3);
+  Adafruit_BusIO_RegisterBits hi_res = Adafruit_BusIO_RegisterBits(&ctrl_4, 1, 3);
+
+  uint8_t low_power_bit = low_power.read();
+  uint8_t hi_res_bit = hi_res.read();
+
+  return (lsm303_accel_mode_t)(low_power_bit<<1 | hi_res_bit);
+}
+// /***************************************************************************
+//  PRIVATE FUNCTIONS
+//  ***************************************************************************/
+  // Adafruit_BusIO_RegisterBits(Adafruit_BusIO_Register *reg, uint8_t bits, uint8_t shift);
+
 /**************************************************************************/
 /*!
     @brief  Reads the raw data from the sensor
@@ -186,21 +222,7 @@ void Adafruit_LSM303_Accel_Unified::getSensor(sensor_t *sensor) {
 /**************************************************************************/
 void Adafruit_LSM303_Accel_Unified::read()
 {
-  
-
-  // uint8_t shift = 4;
-
-  // Adafruit_BusIO_Register data_reg =
-  //     Adafruit_BusIO_Register(i2c_dev, LSM303_REGISTER_ACCEL_OUT_X_L_A, 1);
-  // uint16_t buffer[3];
-  // data_reg.read((uint8_t *)buffer, 6);
-
-
-  // raw.x = buffer[0] >> shift;
-  // raw.y = buffer[1] >> shift;
-  // raw.z = buffer[2] >> shift;
-
-  // this sucks but the above doesn't work.
+  // this sucks but using one register with a 6 byte read to buffer doesn't work.
   Adafruit_BusIO_Register data_reg0 =
       Adafruit_BusIO_Register(i2c_dev, LSM303_REGISTER_ACCEL_OUT_X_L_A, 1);
   Adafruit_BusIO_Register data_reg1 =
@@ -224,4 +246,15 @@ void Adafruit_LSM303_Accel_Unified::read()
   raw.x = (int16_t)(xlo | (xhi << 8)) >> 4;
   raw.y = (int16_t)(ylo | (yhi << 8)) >> 4;
   raw.z = (int16_t)(zlo | (zhi << 8)) >> 4;
+}
+
+float Adafruit_LSM303_Accel_Unified::getLSB(void){
+  float lsb;
+  switch (getRange()) {
+    case LSM303_RANGE_2G: lsb = 0.00098; break;
+    case LSM303_RANGE_4G: lsb = 0.00195; break;
+    case LSM303_RANGE_8G: lsb = 0.0039; break;
+    case LSM303_RANGE_16G: lsb = 0.01172; break;
+  }
+  return lsb; //what about the shift?
 }

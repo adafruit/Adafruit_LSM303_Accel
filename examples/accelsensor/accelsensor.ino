@@ -39,6 +39,22 @@ void setup(void)
 
   /* Display some basic information on this sensor */
   displaySensorDetails();
+  accel.setRange(LSM303_RANGE_8G);
+  Serial.print("Range set to: ");
+  switch (accel.getRange()) {
+    case LSM303_RANGE_2G: Serial.println("+- 2G"); break;
+    case LSM303_RANGE_4G: Serial.println("+- 4G"); break;
+    case LSM303_RANGE_8G: Serial.println("+- 8G"); break;
+    case LSM303_RANGE_16G: Serial.println("+- 16G"); break;
+  }
+
+  accel.setMode(LSM303_MODE_HI_RESOLUTION);
+  Serial.print("Range set to: ");
+  switch (accel.getMode()) {
+    case LSM303_MODE_NORMAL: Serial.println("Normal"); break;
+    case LSM303_MODE_LOW_POWER: Serial.println("Low Power"); break;
+    case LSM303_MODE_HI_RESOLUTION: Serial.println("High Resolution"); break;
+  }
 }
 
 void loop(void)
