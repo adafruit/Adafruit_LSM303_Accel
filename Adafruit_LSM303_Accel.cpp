@@ -33,96 +33,55 @@ static float _lsm303Accel_MG_LSB     = 0.001F;   // 1, 2, 4 or 12 mg per lsb
 /***************************************************************************
  ACCELEROMETER
  ***************************************************************************/
-/***************************************************************************
- PRIVATE FUNCTIONS
- ***************************************************************************/
+// /***************************************************************************
+//  PRIVATE FUNCTIONS
+//  ***************************************************************************/
 
-/**************************************************************************/
-/*!
-    @brief  Abstract away platform differences in Arduino wire library
-*/
-/**************************************************************************/
-void Adafruit_LSM303_Accel_Unified::write8(byte address, byte reg, byte value)
-{
-  Wire.beginTransmission(address);
-  #if ARDUINO >= 100
-    Wire.write((uint8_t)reg);
-    Wire.write((uint8_t)value);
-  #else
-    Wire.send(reg);
-    Wire.send(value);
-  #endif
-  Wire.endTransmission();
-}
+// /**************************************************************************/
+// /*!
+//     @brief  Abstract away platform differences in Arduino wire library
+// */
+// /**************************************************************************/
+// void Adafruit_LSM303_Accel_Unified::write8(byte address, byte reg, byte value)
+// {
+//   Wire.beginTransmission(address);
+//   #if ARDUINO >= 100
+//     Wire.write((uint8_t)reg);
+//     Wire.write((uint8_t)value);
+//   #else
+//     Wire.send(reg);
+//     Wire.send(value);
+//   #endif
+//   Wire.endTransmission();
+// }
 
-/**************************************************************************/
-/*!
-    @brief  Abstract away platform differences in Arduino wire library
-*/
-/**************************************************************************/
-byte Adafruit_LSM303_Accel_Unified::read8(byte address, byte reg)
-{
-  byte value;
+// /**************************************************************************/
+// /*!
+//     @brief  Abstract away platform differences in Arduino wire library
+// */
+// /**************************************************************************/
+// byte Adafruit_LSM303_Accel_Unified::read8(byte address, byte reg)
+// {
+//   byte value;
 
-  Wire.beginTransmission(address);
-  #if ARDUINO >= 100
-    Wire.write((uint8_t)reg);
-  #else
-    Wire.send(reg);
-  #endif
-  Wire.endTransmission();
-  Wire.requestFrom(address, (byte)1);
-  #if ARDUINO >= 100
-    value = Wire.read();
-  #else
-    value = Wire.receive();
-  #endif
-  Wire.endTransmission();
+//   Wire.beginTransmission(address);
+//   #if ARDUINO >= 100
+//     Wire.write((uint8_t)reg);
+//   #else
+//     Wire.send(reg);
+//   #endif
+//   Wire.endTransmission();
+//   Wire.requestFrom(address, (byte)1);
+//   #if ARDUINO >= 100
+//     value = Wire.read();
+//   #else
+//     value = Wire.receive();
+//   #endif
+//   Wire.endTransmission();
 
-  return value;
-}
+//   return value;
+// }
 
-/**************************************************************************/
-/*!
-    @brief  Reads the raw data from the sensor
-*/
-/**************************************************************************/
-void Adafruit_LSM303_Accel_Unified::read()
-{
-  // Read the accelerometer
-  Wire.beginTransmission((byte)LSM303_ADDRESS_ACCEL);
-  #if ARDUINO >= 100
-    Wire.write(LSM303_REGISTER_ACCEL_OUT_X_L_A | 0x80);
-  #else
-    Wire.send(LSM303_REGISTER_ACCEL_OUT_X_L_A | 0x80);
-  #endif
-  Wire.endTransmission();
-  Wire.requestFrom((byte)LSM303_ADDRESS_ACCEL, (byte)6);
-
-  // Wait around until enough data is available
-  while (Wire.available() < 6);
-
-  #if ARDUINO >= 100
-    uint8_t xlo = Wire.read();
-    uint8_t xhi = Wire.read();
-    uint8_t ylo = Wire.read();
-    uint8_t yhi = Wire.read();
-    uint8_t zlo = Wire.read();
-    uint8_t zhi = Wire.read();
-  #else
-    uint8_t xlo = Wire.receive();
-    uint8_t xhi = Wire.receive();
-    uint8_t ylo = Wire.receive();
-    uint8_t yhi = Wire.receive();
-    uint8_t zlo = Wire.receive();
-    uint8_t zhi = Wire.receive();
-  #endif
-
-  // Shift values to create properly formed integer (low byte first)
-  raw.x = (int16_t)(xlo | (xhi << 8)) >> 4;
-  raw.y = (int16_t)(ylo | (yhi << 8)) >> 4;
-  raw.z = (int16_t)(zlo | (zhi << 8)) >> 4;
-}
 
 /***************************************************************************
  CONSTRUCTOR
@@ -151,21 +110,27 @@ Adafruit_LSM303_Accel_Unified::Adafruit_LSM303_Accel_Unified(int32_t sensorID) {
     @brief  Sets up the HW
 */
 /**************************************************************************/
-bool Adafruit_LSM303_Accel_Unified::begin()
+bool Adafruit_LSM303_Accel_Unified::begin(uint8_t i2c_address, TwoWire *wire)
 {
   // Enable I2C
-  Wire.begin();
+  i2c_dev = new Adafruit_I2CDevice(i2c_address, wire);
 
-  // Enable the accelerometer (100Hz)
-  write8(LSM303_ADDRESS_ACCEL, LSM303_REGISTER_ACCEL_CTRL_REG1_A, 0x57);
-
-  // LSM303DLHC has no WHOAMI register so read CTRL_REG1_A back to check
-  // if we are connected or not
-  uint8_t reg1_a = read8(LSM303_ADDRESS_ACCEL, LSM303_REGISTER_ACCEL_CTRL_REG1_A);
-  if (reg1_a != 0x57)
-  {
+  if (!i2c_dev->begin()) {
+    Serial.println("Failed to init i2c address");
     return false;
   }
+  Adafruit_BusIO_Register ctrl1 = Adafruit_BusIO_Register(i2c_dev, LSM303_REGISTER_ACCEL_CTRL_REG1_A, 1);
+  ctrl1.write(0x57);
+  // // Enable the accelerometer (100Hz)
+  // write8(LSM303_ADDRESS_ACCEL, LSM303_REGISTER_ACCEL_CTRL_REG1_A, 0x57);
+
+  // // LSM303DLHC has no WHOAMI register so read CTRL_REG1_A back to check
+  // // if we are connected or not
+  // uint8_t reg1_a = read8(LSM303_ADDRESS_ACCEL, LSM303_REGISTER_ACCEL_CTRL_REG1_A);
+  // if (reg1_a != 0x57)
+  // {
+  //   return false;
+  // }
 
   return true;
 }
@@ -212,4 +177,51 @@ void Adafruit_LSM303_Accel_Unified::getSensor(sensor_t *sensor) {
   sensor->max_value   = 0.0F; // TBD
   sensor->min_value   = 0.0F; // TBD
   sensor->resolution  = 0.0F; // TBD
+}
+
+/**************************************************************************/
+/*!
+    @brief  Reads the raw data from the sensor
+*/
+/**************************************************************************/
+void Adafruit_LSM303_Accel_Unified::read()
+{
+  
+
+  // uint8_t shift = 4;
+
+  // Adafruit_BusIO_Register data_reg =
+  //     Adafruit_BusIO_Register(i2c_dev, LSM303_REGISTER_ACCEL_OUT_X_L_A, 1);
+  // uint16_t buffer[3];
+  // data_reg.read((uint8_t *)buffer, 6);
+
+
+  // raw.x = buffer[0] >> shift;
+  // raw.y = buffer[1] >> shift;
+  // raw.z = buffer[2] >> shift;
+
+  // this sucks but the above doesn't work.
+  Adafruit_BusIO_Register data_reg0 =
+      Adafruit_BusIO_Register(i2c_dev, LSM303_REGISTER_ACCEL_OUT_X_L_A, 1);
+  Adafruit_BusIO_Register data_reg1 =
+      Adafruit_BusIO_Register(i2c_dev, LSM303_REGISTER_ACCEL_OUT_X_H_A, 1);
+  Adafruit_BusIO_Register data_reg2 =
+      Adafruit_BusIO_Register(i2c_dev, LSM303_REGISTER_ACCEL_OUT_Y_L_A, 1);
+  Adafruit_BusIO_Register data_reg3 =
+      Adafruit_BusIO_Register(i2c_dev, LSM303_REGISTER_ACCEL_OUT_Y_H_A, 1);
+  Adafruit_BusIO_Register data_reg4 =
+      Adafruit_BusIO_Register(i2c_dev, LSM303_REGISTER_ACCEL_OUT_Z_L_A, 1);
+  Adafruit_BusIO_Register data_reg5 =
+      Adafruit_BusIO_Register(i2c_dev, LSM303_REGISTER_ACCEL_OUT_Z_H_A, 1);
+
+  uint8_t xlo = data_reg0.read();
+  uint8_t xhi = data_reg1.read();
+  uint8_t ylo = data_reg2.read();
+  uint8_t yhi = data_reg3.read();
+  uint8_t zlo = data_reg4.read();
+  uint8_t zhi = data_reg5.read();
+
+  raw.x = (int16_t)(xlo | (xhi << 8)) >> 4;
+  raw.y = (int16_t)(ylo | (yhi << 8)) >> 4;
+  raw.z = (int16_t)(zlo | (zhi << 8)) >> 4;
 }

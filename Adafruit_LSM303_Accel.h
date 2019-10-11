@@ -23,13 +23,13 @@
 
 #include <Adafruit_Sensor.h>
 #include <Wire.h>
-
+#include <Adafruit_BusIO_Register.h>
+#include <Adafruit_I2CDevice.h>
 
 /*=========================================================================
     I2C ADDRESS/BITS
     -----------------------------------------------------------------------*/
     #define LSM303_ADDRESS_ACCEL          (0x32 >> 1)         // 0011001x
-    #define LSM303_ADDRESS_MAG            (0x3C >> 1)         // 0011110x
 /*=========================================================================*/
 
 /*=========================================================================
@@ -94,7 +94,7 @@ class Adafruit_LSM303_Accel_Unified : public Adafruit_Sensor
   public:
     Adafruit_LSM303_Accel_Unified(int32_t sensorID = -1);
 
-    bool begin(void);
+    bool begin(uint8_t i2c_addr = LSM303_ADDRESS_ACCEL, TwoWire *wire = &Wire);
     bool getEvent(sensors_event_t*);
     void getSensor(sensor_t*);
 
@@ -106,6 +106,8 @@ class Adafruit_LSM303_Accel_Unified : public Adafruit_Sensor
     void write8(byte address, byte reg, byte value);
     byte read8(byte address, byte reg);
     void read(void);
+
+    Adafruit_I2CDevice *i2c_dev;
 };
 
 #endif
