@@ -39,21 +39,24 @@ void setup(void)
 
   /* Display some basic information on this sensor */
   displaySensorDetails();
-  accel.setRange(LSM303_RANGE_8G);
+
+  accel.setRange(LSM303_RANGE_4G);
   Serial.print("Range set to: ");
-  switch (accel.getRange()) {
+  lsm303_accel_range_t new_range = accel.getRange();
+  switch (new_range) {
     case LSM303_RANGE_2G: Serial.println("+- 2G"); break;
     case LSM303_RANGE_4G: Serial.println("+- 4G"); break;
     case LSM303_RANGE_8G: Serial.println("+- 8G"); break;
     case LSM303_RANGE_16G: Serial.println("+- 16G"); break;
   }
 
-  accel.setMode(LSM303_MODE_HI_RESOLUTION);
-  Serial.print("Range set to: ");
-  switch (accel.getMode()) {
+  accel.setMode(LSM303_MODE_NORMAL);
+  Serial.print("Mode set to: ");
+  lsm303_accel_mode_t new_mode =accel.getMode();
+  switch (new_mode) {
     case LSM303_MODE_NORMAL: Serial.println("Normal"); break;
     case LSM303_MODE_LOW_POWER: Serial.println("Low Power"); break;
-    case LSM303_MODE_HI_RESOLUTION: Serial.println("High Resolution"); break;
+    case LSM303_MODE_HIGH_RESOLUTION: Serial.println("High Resolution"); break;
   }
 }
 
@@ -63,17 +66,13 @@ void loop(void)
   sensors_event_t event;
   accel.getEvent(&event);
 
+
   /* Display the results (acceleration is measured in m/s^2) */
   Serial.print("X: "); Serial.print(event.acceleration.x); Serial.print("  ");
   Serial.print("Y: "); Serial.print(event.acceleration.y); Serial.print("  ");
-  Serial.print("Z: "); Serial.print(event.acceleration.z); Serial.print("  ");Serial.println("m/s^2 ");
+  Serial.print("Z: "); Serial.print(event.acceleration.z); Serial.print("  ");
+  Serial.println("m/s^2");
 
-  /* Note: You can also get the raw (non unified values) for */
-  /* the last data sample as follows. The .getEvent call populates */
-  /* the raw values used below. */
-  //Serial.print("X Raw: "); Serial.print(accel.raw.x); Serial.print("  ");
-  //Serial.print("Y Raw: "); Serial.print(accel.raw.y); Serial.print("  ");
-  //Serial.print("Z Raw: "); Serial.print(accel.raw.z); Serial.println("");
 
   /* Delay before the next sample */
   delay(500);

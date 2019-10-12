@@ -37,6 +37,7 @@ REGISTERS
 -----------------------------------------------------------------------*/
 typedef enum
 {                                                     // DEFAULT    TYPE
+  LSM303_REGISTER_ACCEL_WHO_AM_I            = 0x0F,   // 00000111   rw
   LSM303_REGISTER_ACCEL_CTRL_REG1_A         = 0x20,   // 00000111   rw
   LSM303_REGISTER_ACCEL_CTRL_REG2_A         = 0x21,   // 00000000   rw
   LSM303_REGISTER_ACCEL_CTRL_REG3_A         = 0x22,   // 00000000   rw
@@ -91,7 +92,7 @@ typedef enum range {
 
 typedef enum mode {
   LSM303_MODE_NORMAL,
-  LSM303_MODE_HI_RESOLUTION,
+  LSM303_MODE_HIGH_RESOLUTION,
   LSM303_MODE_LOW_POWER,
 } lsm303_accel_mode_t;
 /*=========================================================================
@@ -116,7 +117,8 @@ class Adafruit_LSM303_Accel_Unified : public Adafruit_Sensor
     lsm303_accel_mode_t getMode(void);
     void setMode(lsm303_accel_mode_t);
 
-    float getLSB(void);
+    float getLSB(lsm303_accel_mode_t);
+    uint8_t getShift(lsm303_accel_mode_t);
 
 
     lsm303AccelData raw;   // Last read accelerometer data will be available here
@@ -125,7 +127,7 @@ class Adafruit_LSM303_Accel_Unified : public Adafruit_Sensor
     int32_t _sensorID;
 
 
-    void read(void);
+    void readRawData(void);
 
     Adafruit_I2CDevice *i2c_dev;
 };
