@@ -19,22 +19,8 @@
 #endif
 
 #include <Wire.h>
-
 #include <limits.h>
-
 #include "Adafruit_LSM303_Accel.h"
-
-/* enabling this #define will enable the debug print blocks
-#define LSM303_DEBUG
-*/
-// keepting for reference later; seems to disagree with the stm32 driver
-//static float _lsm303Accel_MG_LSB     = 0.001F;   // 1, 2, 4 or 12 mg per lsb
-
-/***************************************************************************
- ACCELEROMETER
- ***************************************************************************/
-
-
 
 /***************************************************************************
  CONSTRUCTOR
@@ -43,6 +29,7 @@
 /**************************************************************************/
 /*!
     @brief  Instantiates a new Adafruit_LSM303 class
+    @param sensorID an optional identifier for the sensor instance
 */
 /**************************************************************************/
 Adafruit_LSM303_Accel_Unified::Adafruit_LSM303_Accel_Unified(int32_t sensorID) {
@@ -58,11 +45,14 @@ Adafruit_LSM303_Accel_Unified::Adafruit_LSM303_Accel_Unified(int32_t sensorID) {
  PUBLIC FUNCTIONS
  ***************************************************************************/
 
-/**************************************************************************/
 /*!
-    @brief  Sets up the HW
-*/
-/**************************************************************************/
+ *    @brief  Sets up the hardware and initializes I2C
+ *    @param  i2c_address
+ *            The I2C address to be used.
+ *    @param  wire
+ *            The Wire object to be used for I2C connections.
+ *    @return True if initialization was successful, otherwise false.
+ */
 bool Adafruit_LSM303_Accel_Unified::begin(uint8_t i2c_address, TwoWire *wire)
 {
   // Enable I2C
@@ -86,11 +76,16 @@ bool Adafruit_LSM303_Accel_Unified::begin(uint8_t i2c_address, TwoWire *wire)
   return true;
 }
 
+
 /**************************************************************************/
 /*!
-    @brief  Gets the most recent sensor event
+    @brief  Gets the most recent sensor event, Adafruit Unified Sensor format
+    @param  event Pointer to an Adafruit Unified sensor_event_t object that
+            we'll fill in
+    @returns True on successful read
 */
 /**************************************************************************/
+
 bool Adafruit_LSM303_Accel_Unified::getEvent(sensors_event_t *event) {
   /* Clear the event */
   memset(event, 0, sizeof(sensors_event_t));
@@ -219,7 +214,6 @@ lsm303_accel_mode_t Adafruit_LSM303_Accel_Unified::getMode(void){
 // /***************************************************************************
 //  PRIVATE FUNCTIONS
 //  ***************************************************************************/
-  // Adafruit_BusIO_RegisterBits(Adafruit_BusIO_Register *reg, uint8_t bits, uint8_t shift);
 
 /**************************************************************************/
 /*!
@@ -253,7 +247,13 @@ void Adafruit_LSM303_Accel_Unified::readRawData()
   raw.y = (int16_t)(ylo | (yhi << 8));
   raw.z = (int16_t)(zlo | (zhi << 8));
 }
-
+/**************************************************************************/
+/*!
+    @brief  Gets the Least Significant Bit value for the current mode
+    @param mode the current mode, used to determind the appropriate lsb value
+    in concert with the current range setting.
+*/
+/**************************************************************************/
 float Adafruit_LSM303_Accel_Unified::getLSB(lsm303_accel_mode_t mode){
   float lsb;
   lsm303_accel_range_t range = getRange();
@@ -285,6 +285,13 @@ float Adafruit_LSM303_Accel_Unified::getLSB(lsm303_accel_mode_t mode){
 
   return lsb;
 }
+/**************************************************************************/
+/*!
+    @brief  Gets the bit shift amount for the current mode
+    @param mode the current mode, used to determind the appropriate shift
+    amount based on the bitdepth of the mode
+*/
+/**************************************************************************/
 uint8_t Adafruit_LSM303_Accel_Unified::getShift(lsm303_accel_mode_t mode){
   uint8_t shift;
   switch (mode) {

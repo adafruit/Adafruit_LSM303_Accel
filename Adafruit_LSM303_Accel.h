@@ -72,28 +72,31 @@ typedef enum
 
 /*=========================================================================*/
 
-/*=========================================================================
-INTERNAL ACCELERATION DATA TYPE
------------------------------------------------------------------------*/
+
+/**************************************************************************/
+/*!
+    @brief  INTERNAL ACCELERATION DATA TYPE
+*/
+/**************************************************************************/
 typedef struct lsm303AccelData_s
 {
-  int16_t x;
-  int16_t y;
-  int16_t z;
+  int16_t x; ///< x-axis data
+  int16_t y; ///< y-axis data
+  int16_t z; ///< z-axis data
 } lsm303AccelData;
 /*=========================================================================*/
 
 typedef enum range {
-  LSM303_RANGE_2G,
-  LSM303_RANGE_4G,
-  LSM303_RANGE_8G,
-  LSM303_RANGE_16G,
+  LSM303_RANGE_2G, ///< Measurement range from +2G to -2G (19.61 m/s^2)
+  LSM303_RANGE_4G, ///< Measurement range from +4G to -4G (39.22 m/s^2)
+  LSM303_RANGE_8G, ///< Measurement range from +8G to -8G (78.45 m/s^2)
+  LSM303_RANGE_16G, ///< Measurement range from +16G to -16G (156.9 m/s^2)
 } lsm303_accel_range_t;
 
 typedef enum mode {
-  LSM303_MODE_NORMAL,
-  LSM303_MODE_HIGH_RESOLUTION,
-  LSM303_MODE_LOW_POWER,
+  LSM303_MODE_NORMAL, ///< Normal measurement mode; 10-bit
+  LSM303_MODE_HIGH_RESOLUTION, ///< High resolution mode; 12-bit
+  LSM303_MODE_LOW_POWER, ///< Low power mode; 8-bit
 } lsm303_accel_mode_t;
 /*=========================================================================
     CHIP ID
@@ -101,7 +104,9 @@ typedef enum mode {
     #define LSM303_ID                     (0b11010100)
 /*=========================================================================*/
 
-/* Unified sensor driver for the accelerometer */
+/*! 
+  @brief Unified sensor driver for the accelerometer 
+*/
 class Adafruit_LSM303_Accel_Unified : public Adafruit_Sensor
 {
   public:
@@ -117,14 +122,14 @@ class Adafruit_LSM303_Accel_Unified : public Adafruit_Sensor
     lsm303_accel_mode_t getMode(void);
     void setMode(lsm303_accel_mode_t);
 
-    float getLSB(lsm303_accel_mode_t);
-    uint8_t getShift(lsm303_accel_mode_t);
-
-
-    lsm303AccelData raw;   // Last read accelerometer data will be available here
 
   private:
     int32_t _sensorID;
+
+
+    lsm303AccelData raw;   // Last read accelerometer data will be available here
+    float getLSB(lsm303_accel_mode_t);
+    uint8_t getShift(lsm303_accel_mode_t);
 
 
     void readRawData(void);
