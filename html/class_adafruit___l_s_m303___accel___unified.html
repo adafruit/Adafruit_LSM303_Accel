@@ -106,6 +106,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a54f0853d3c88a9995b0f4f4f357a267c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___l_s_m303___accel___unified.html#a54f0853d3c88a9995b0f4f4f357a267c">setMode</a> (lsm303_accel_mode_t)</td></tr>
 <tr class="memdesc:a54f0853d3c88a9995b0f4f4f357a267c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the accelerometer's power mode.  <a href="#a54f0853d3c88a9995b0f4f4f357a267c">More...</a><br /></td></tr>
 <tr class="separator:a54f0853d3c88a9995b0f4f4f357a267c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a822cf180aa4f4cd84ded428a34c07cde"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___l_s_m303___accel___unified.html#a822cf180aa4f4cd84ded428a34c07cde">interruptsActiveHigh</a> (bool)</td></tr>
+<tr class="memdesc:a822cf180aa4f4cd84ded428a34c07cde"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the polarity of the interrupt pins.  <a href="#a822cf180aa4f4cd84ded428a34c07cde">More...</a><br /></td></tr>
+<tr class="separator:a822cf180aa4f4cd84ded428a34c07cde"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Unified sensor driver for the accelerometer. </p>
@@ -290,6 +293,32 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">new_mode</td><td>an <code>lsm303_accel_mode_t</code> representing the power mode. The mode effects the precision of the sensor's readings High resolution is 12-bit Normal mode is 10-bit Low power is 8-bit </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a822cf180aa4f4cd84ded428a34c07cde"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a822cf180aa4f4cd84ded428a34c07cde">&#9670;&nbsp;</a></span>interruptsActiveHigh()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_LSM303_Accel_Unified::interruptsActiveHigh </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>active_high</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the polarity of the interrupt pins. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">active_high</td><td>Set to true for the INT pints to be active high, false for active low </td></tr>
   </table>
   </dd>
 </dl>

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['z',['z',['../structlsm303_accel_data__s.html#aa8aedc4b78c42e606bf89dfa380f97e1',1,'lsm303AccelData_s']]]
+  ['y',['y',['../structlsm303_accel_data__s.html#a0c934a0a1ccde8de68c9396145c99a05',1,'lsm303AccelData_s']]]
 ];
