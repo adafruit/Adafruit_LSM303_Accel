@@ -118,6 +118,8 @@ public:
   lsm303_accel_mode_t getMode(void);
   void setMode(lsm303_accel_mode_t);
 
+  void interruptsActiveHigh(bool);
+
 private:
   int32_t _sensorID;
 

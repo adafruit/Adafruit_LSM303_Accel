@@ -335,3 +335,18 @@ uint8_t Adafruit_LSM303_Accel_Unified::getShift(lsm303_accel_mode_t mode) {
 
   return shift;
 }
+
+/*************************************************************************/
+/*!
+    @brief Sets the polarity of the interrupt pins
+    @param active_high Set to true for the INT pints to be active high,
+        false for active low
+*/
+void Adafruit_LSM303_Accel_Unified::interruptsActiveHigh(bool active_high) {
+  Adafruit_BusIO_Register ctrl_6 =
+      Adafruit_BusIO_Register(i2c_dev, LSM303_REGISTER_ACCEL_CTRL_REG6_A);
+  Adafruit_BusIO_RegisterBits active_low_bit =
+      Adafruit_BusIO_RegisterBits(&ctrl_6, 1, 1);
+
+  active_low_bit.write(active_high);
+}
