@@ -39,4 +39,11 @@ Written by Bryan Siepert for Adafruit Industries.
 BSD license, check license.txt for more information
 All text above must be included in any redistribution
 
-To install, use the Arduino Library Manager and search for "Adafruit LSM303 Accel" and install the library.
+To install, use the Arduino Library Manager and search for and install the following libraries:
+* "Adafruit LSM303 Accel"
+* "Adafruit Unified Sensor"
+* "Adafruit BusIO"
+
+Additonal details can be found in the guide:
+
+https://learn.adafruit.com/lsm303-accelerometer-slash-compass-breakout/coding
