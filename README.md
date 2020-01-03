@@ -1,13 +1,15 @@
-Adafruit_LSM303_Accel [![Build Status](https://travis-ci.com/adafruit/Adafruit_LSM303_Accel.svg?branch=master)](https://travis-ci.com/adafruit/Adafruit_LSM303_Accel)
+Adafruit_LSM303_Accel [![Build Status](https://github.com/adafruit/Adafruit_LSM303_Accel/workflows/Arduino%20Library%20CI/badge.svg)](https://github.com/adafruit/Adafruit_LSM303_Accel/actions)
 ================
 
 <a href="https://www.adafruit.com/product/1120"><img src="assets/board.jpg?raw=true" width="500px"></a>
 
 # Adafruit LSM303 Accelerometer Library
-This library is for the Adafruit LSM303 Breakouts' (http://www.adafruit.com/products/1120) accelerometer, and is based on Adafruit's Unified Sensor Library (Adafruit_Sensor).
 
-Tested and works great with the Adafruit's LSM303 Breakout Boards
+This library is for the accelerometer used in the LSM303AGR and LSM303DLH
+
+Tested and works great with Adafruit's LSM303AGR and LSM303DLH Breakout Boards
 * https://www.adafruit.com/product/1120
+* https://www.adafruit.com/product/4413
 
 This chip uses I2C to communicate, 2 pins are required to interface
 
@@ -17,7 +19,10 @@ Adafruit invests time and resources providing this open source code, please supp
 
 The LSM303 is a digital (I2C) accelerometer and digital compass (magnetometer) and accelerometer.  The accelerometer allows you to measure acceleration or direction towards the center or the earth or orthogonal axes.
 
-More information on the LSM303 can be found in the datasheet: http://www.adafruit.com/datasheets/LSM303DLHC.PDF
+Information on the LSM303AGR can be found in the datasheet: http://www.adafruit.com/datasheets/LSM303AGRC.PDF
+
+Information on the LSM303DLH can be found in the datasheet: http://www.adafruit.com/datasheets/LSM303DLHC.PDF
+
 
 ## What is the Adafruit Unified Sensor Library? ##
 
