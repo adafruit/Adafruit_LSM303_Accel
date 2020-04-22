@@ -1,4 +1,4 @@
-Adafruit_LSM303_Accel [![Build Status](https://github.com/adafruit/Adafruit_LSM303_Accel/workflows/Arduino%20Library%20CI/badge.svg)](https://github.com/adafruit/Adafruit_LSM303_Accel/actions)
+Adafruit_LSM303_Accel [![Build Status](https://github.com/adafruit/Adafruit_LSM303_Accel/workflows/Arduino%20Library%20CI/badge.svg)](https://github.com/adafruit/Adafruit_LSM303_Accel/actions)[![Documentation](https://github.com/adafruit/ci-arduino/blob/master/assets/doxygen_badge.svg)](http://adafruit.github.io/Adafruit_LSM303_Accel/html/index.html)
 ================
 
 <a href="https://www.adafruit.com/product/1120"><img src="assets/board.jpg?raw=true" width="500px"></a>
