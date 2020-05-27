@@ -17,15 +17,11 @@
 #include <Adafruit_Sensor.h>
 #include <Wire.h>
 
-/*=========================================================================
-I2C ADDRESS/BITS
------------------------------------------------------------------------*/
-#define LSM303_ADDRESS_ACCEL (0x32 >> 1) // 0011001x
-/*=========================================================================*/
+#define LSM303_ADDRESS_ACCEL (0x32 >> 1) //!< I2C address/bits, 0011001x
 
-/*=========================================================================
-REGISTERS
------------------------------------------------------------------------*/
+/*!
+ * @brief Registers
+ */
 typedef enum {                               // DEFAULT    TYPE
   LSM303_REGISTER_ACCEL_WHO_AM_I = 0x0F,     // 00000111   rw
   LSM303_REGISTER_ACCEL_CTRL_REG1_A = 0x20,  // 00000111   rw
@@ -74,6 +70,9 @@ typedef struct lsm303AccelData_s {
 } lsm303AccelData;
 /*=========================================================================*/
 
+/*!
+ * @brief Set of linear acceleration measurement ranges
+ */
 typedef enum range {
   LSM303_RANGE_2G,  ///< Measurement range from +2G to -2G (19.61 m/s^2)
   LSM303_RANGE_4G,  ///< Measurement range from +4G to -4G (39.22 m/s^2)
@@ -81,16 +80,17 @@ typedef enum range {
   LSM303_RANGE_16G, ///< Measurement range from +16G to -16G (156.9 m/s^2)
 } lsm303_accel_range_t;
 
+/*!
+ * @brief Set of different modes that can be used. Normal, high resolution, and
+ * low power
+ */
 typedef enum mode {
   LSM303_MODE_NORMAL,          ///< Normal measurement mode; 10-bit
   LSM303_MODE_HIGH_RESOLUTION, ///< High resolution mode; 12-bit
   LSM303_MODE_LOW_POWER,       ///< Low power mode; 8-bit
 } lsm303_accel_mode_t;
-/*=========================================================================
-    CHIP ID
-    -----------------------------------------------------------------------*/
-#define LSM303_ID (0b11010100)
-/*=========================================================================*/
+
+#define LSM303_ID (0b11010100) //!< Chip ID
 
 /*!
   @brief Unified sensor driver for the accelerometer
