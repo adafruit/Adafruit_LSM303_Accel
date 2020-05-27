@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['y',['y',['../structlsm303_accel_data__s.html#a0c934a0a1ccde8de68c9396145c99a05',1,'lsm303AccelData_s']]]
+  ['setmode',['setMode',['../class_adafruit___l_s_m303___accel___unified.html#a54f0853d3c88a9995b0f4f4f357a267c',1,'Adafruit_LSM303_Accel_Unified']]],
+  ['setrange',['setRange',['../class_adafruit___l_s_m303___accel___unified.html#acb414dcb1a0ec2a1b8923bb26c0fd425',1,'Adafruit_LSM303_Accel_Unified']]]
 ];
