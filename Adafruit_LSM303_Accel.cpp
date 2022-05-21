@@ -68,6 +68,8 @@ Adafruit_LSM303_Accel_Unified::Adafruit_LSM303_Accel_Unified(int32_t sensorID) {
  */
 bool Adafruit_LSM303_Accel_Unified::begin(uint8_t i2c_address, TwoWire *wire) {
 
+  if (i2c_dev)
+    delete i2c_dev;
   i2c_dev = new Adafruit_I2CDevice(i2c_address, wire);
 
   if (!i2c_dev->begin()) {
