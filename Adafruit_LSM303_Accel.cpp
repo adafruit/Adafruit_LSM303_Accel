@@ -274,7 +274,7 @@ void Adafruit_LSM303_Accel_Unified::readRawData() {
 */
 /**************************************************************************/
 float Adafruit_LSM303_Accel_Unified::getLSB(lsm303_accel_mode_t mode) {
-  float lsb;
+  float lsb = 0;
   lsm303_accel_range_t range = getRange();
   if (mode == LSM303_MODE_NORMAL) {
     switch (range) {
@@ -335,7 +335,7 @@ float Adafruit_LSM303_Accel_Unified::getLSB(lsm303_accel_mode_t mode) {
 */
 /**************************************************************************/
 uint8_t Adafruit_LSM303_Accel_Unified::getShift(lsm303_accel_mode_t mode) {
-  uint8_t shift;
+  uint8_t shift = 0;
   switch (mode) {
   case LSM303_MODE_HIGH_RESOLUTION:
     shift = 4;
