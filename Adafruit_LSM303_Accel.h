@@ -120,7 +120,7 @@ private:
 
   void readRawData(void);
 
-  Adafruit_I2CDevice *i2c_dev;
+  Adafruit_I2CDevice *i2c_dev = NULL;
 };
 
 #endif

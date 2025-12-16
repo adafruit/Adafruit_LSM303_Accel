@@ -75,17 +75,17 @@ bool Adafruit_LSM303_Accel_Unified::begin(uint8_t i2c_address, TwoWire *wire) {
   if (!i2c_dev->begin()) {
     return false;
   }
-  Adafruit_BusIO_Register ctrl1 =
-      Adafruit_BusIO_Register(i2c_dev, LSM303_REGISTER_ACCEL_CTRL_REG1_A, 1);
-  // Enable the accelerometer (100Hz)
-  ctrl1.write(0x57);
-
   Adafruit_BusIO_Register chip_id =
       Adafruit_BusIO_Register(i2c_dev, LSM303_REGISTER_ACCEL_WHO_AM_I, 1);
   if (chip_id.read() != 0x33) {
     // No LSM30 detected ... return false
     return false;
   }
+
+  Adafruit_BusIO_Register ctrl1 =
+      Adafruit_BusIO_Register(i2c_dev, LSM303_REGISTER_ACCEL_CTRL_REG1_A, 1);
+  // Enable the accelerometer (100Hz)
+  ctrl1.write(0x57);
 
   return true;
 }
